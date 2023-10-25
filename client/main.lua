@@ -89,7 +89,21 @@ function init()
                 name = 'cr-picking_' .. k, debugPoly = Config.debug, useZ=true}, {
                 options = {{label = Config.targetText,icon = Config.jobLocations[k].icon, action = function() toggleDuty(k) end}},
                 distance = 2.0
-            })
+            })		
+	    if v.model then
+		exports['qb-target']:AddTargetModel(v.model, {
+		    options = {
+			{
+			    label = Config.targetText,
+			    icon = v.icon,
+			    job = v.name,
+			    action = function()
+				toggleDuty(k)
+			    end
+			}
+		    }
+		})
+		end
         end
     end
 end
@@ -103,3 +117,14 @@ function toggleDuty(k)
         QBCore.Functions.Notify(Config.targetDontHaveJob, "error", 1000)
     end
 end
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+    playerData = QBCore.Functions.GetPlayerData()
+end)
+
+RegisterNetEvent('QBCore:Player:SetPlayerData', function(val)
+    if GetInvokingResource() then return end
+	playerData = val
+end)
+
+CreateThread(init)
